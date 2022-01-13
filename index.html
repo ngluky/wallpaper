@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class='clock'>
+        <!-- <div class="do"></div> -->
+        <div class='hr'></div>
+        <div class='ms'></div>
+        <div class='cs'></div>
+    </div>
+    <div class="weth">
+
+        <div class="weath">
+            <div class="te">
+                <p class='temp'>60</p>
+                <img src='celsius.png' class='icon-temp'>
+            </div>
+            <div class='boxcol'>
+                <img src="" id='icon-clo' class='div1'>
+                <div class='description'>hello</div>
+            </div>
+            
+        </div>
+
+        <div class="day">
+            <p class='thu'>T4 : </p>
+            
+            <p class='day-e'>00 / 00 / 00</p>
+        </div>
+
+        
+    </div>
+    <script>
+        
+        const rootStyle = document.documentElement.style;
+        const hr = document.querySelector('.hr');
+        const ms = document.querySelector('.ms');
+        const cs = document.querySelector('.cs');
+        const thu = document.querySelector('.thu');
+        const day = document.querySelector('.day-e');
+        const temp = document.querySelector('.temp');
+        const apiKey = "4d8fb5b93d4af21d66a2948710284366";
+
+        const dc = document.querySelector('.icon-temp');
+
+        const description = document.querySelector('.description')
+        
+        const img = document.getElementById('icon-clo')
+        setInterval(function() {
+            const date = new Date();
+
+            var csm = date.getSeconds();
+            var Minut_deg =  (csm * 360 / 60)  - 180;
+            if (Minut_deg > 360) {
+                var Minut_deg = Minut_deg - 180;
+            }
+
+
+            var mi = date.getMinutes();
+            mi = mi  + date.getSeconds()/60;
+            var Minute_deg = ( mi * 360 / 60)  - 180;
+            if (Minute_deg > 360) {
+                var Minute_deg = Minute_deg - 180;
+            }
+
+            var hours = date.getHours() ;
+            hours = hours +( date.getMinutes()/60 )+ (date.getSeconds()/(60*60));
+            if (hours > 12) {
+                var hours_2 = hours - 12;
+            }
+            else {
+                var hours_2 = hours;
+            }
+            var hours_deg = ( (hours_2) * 360 / 12) - 180;
+            if (hours == 0){
+                hours_deg = 180;
+            }
+            else if (hours_deg > 360) {
+                var hours_deg = hours_deg - 180;
+            }
+            // console.log(hours)
+
+            day.innerHTML = ': ' + date.getDate() + ' / ' + (date.getMonth() + 1) + ' / ' + (date.getFullYear() - 2000)
+            thu.innerHTML = `T${date.getDay()} `;
+
+            hr.style.transform = 'rotate('+ hours_deg +'deg)';
+            ms.style.transform = 'rotate('+ Minute_deg +'deg)';
+            cs.style.transform = 'rotate('+ Minut_deg +'deg)';
+
+            if ((hours >= 18) || (hours >= 0 && hours < 6)){
+                rootStyle.setProperty('--background-lile-' , '#303030');
+                rootStyle.setProperty('--background-lile-clock-' , '#202020');
+                rootStyle.setProperty('--coler--' , 'white');
+                dc.style.filter = 'invert(100%) sepia(3%) saturate(12%) hue-rotate(103deg) brightness(105%) contrast(105%)';
+                img.style.filter = 'invert(100%) sepia(3%) saturate(12%) hue-rotate(103deg) brightness(105%) contrast(105%)';
+            }   
+
+            else {
+                rootStyle.setProperty('--background-lile-' , 'gray');
+                rootStyle.setProperty('--background-lile-clock-' , 'aliceblue');
+                rootStyle.setProperty('--coler--' , 'black');
+                dc.style.filter = 'none';
+                img.style.filter = 'none';
+            }
+            // https://s3-us-west-2.amazonaws.com/s.cdpn.io/162656/04d.svg
+
+        })
+
+
+        ddd();
+        setInterval(() => {
+            
+        } , 60000)
+
+        function ddd() {
+            const url = `https://api.openweathermap.org/data/2.5/weather?id=1566083&appid=${apiKey}&units=metric`;
+            fetch(url).then(response => response.json())
+            .then(data => {
+                img.src = 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/162656/' + data.weather[0].icon + '.svg'
+                console.log(data)
+                temp.innerHTML = Math.round(data.main.temp);
+                description.innerHTML = data.weather[0].description;
+
+            });
+        }
+
+        // console.log(date.);
+
+
+    </script>
+</body>
+</html>
